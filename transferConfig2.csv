@@ -1,0 +1,5 @@
+users,passw,upfolders,arcfolders,destinationIP,port,tempfolders,description,
+Mbokek,s12345,C:\Users\wn10\Desktop\1\may22\src\sr1,C:\Users\wn10\Desktop\1\may22\arc\1,81.218.166.163,10021,C:\Users\wn10\Desktop\1\may22\temp\1t,ext heli,
+Mbokek,s12345,No,C:\Users\wn10\Desktop\1\may22\arc\1,192.168.4.53,21,C:\Users\wn10\Desktop\1\may22\temp\1t,lab lap,
+test,ts12345,C:\Users\wn10\Desktop\1\may22\src\sr2,C:\Users\wn10\Desktop\1\may22\arc\2,192.168.4.53,21,C:\Users\wn10\Desktop\1\may22\temp\2t,lab lap,
+tech,ts12345,C:\Users\wn10\Desktop\1\may22\src\sr3,C:\Users\wn10\Desktop\1\may22\arc\3,192.168.4.53,21,C:\Users\wn10\Desktop\1\may22\temp\3t,lab lap,
