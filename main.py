@@ -43,7 +43,8 @@ if __name__ == "__main__":
     print("    ftp transfer is started\r\n")
     j = 0
     m = 0
-    users, passw, upfolder, arcfolder, destinationHOST, port, tempfolder = confreader(configFile)
+    isEnable,isLastDest, users, passw, upfolder, arcfolder, \
+    destinationHOST, port, tempfolder = confreader(configFile)
 
     while (continueFlag):
 
@@ -52,14 +53,14 @@ if __name__ == "__main__":
         logging.basicConfig(filename=log, level=logging.INFO, format='%(asctime)s %(message)s',
                             datefmt='%d/%m/%Y %H:%M:%S')
 
-        #   cleanTemporaryFolders()
+  # ===== prepare temporary folders from upfolders  =====
         for i in range(len(upfolder)):
             source = upfolder[i]
             dest = tempfolder[i]
 
             if (source != "No"):
                 copyFilesToArc(source, dest)
-
+#===========================================================
         for i in range(len(users)):
             try:
                 if (ftpExceptIP == destinationHOST[i]) & (ftpExceptEscapecount > 0):
@@ -97,7 +98,7 @@ if __name__ == "__main__":
                     ftp.quit()
 
             except ftplib.all_errors as e:
-                print(" ####   ftp exception  - ", destinationHOST[i], users[i],str(e))
+                print(" \n> > > >   F T P exception  - ", destinationHOST[i], users[i],str(e),"\n")
 
                 time.sleep(0.5)
                 ftpExceptIP = destinationHOST[i]

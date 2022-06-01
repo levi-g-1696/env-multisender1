@@ -110,32 +110,39 @@ def BatchRemoveOlderThan_15min():
 
 #### function read config file ####
 def confreader(file):
+    isEnable=False
     users = []
     passw = []
     upfolders = []
     arcfolders = []
     host = []
     port = []
+
+    isLastDest=[]
     tempfolders = []
     with open(file) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
         for row in csv_reader:
+            isInable= row[0]
             if line_count == 0:
                 # print(f'Column names are {", ".join(row)}')
                 line_count += 1
+            elif isInable=="0" :
+                line_count += 1
             else:
-
-                users.append(row[0])
-                passw.append(row[1])
-                upfolders.append(row[2])
-                arcfolders.append(row[3])
-                host.append(row[4])
-                port.append(row[5])
-                tempfolders.append(row[6])
+                isEnable=row[0]
+                isLastDest.append(row[1])
+                users.append(row[2])
+                passw.append(row[3])
+                upfolders.append(row[4])
+                arcfolders.append(row[5])
+                host.append(row[6])
+                port.append(row[7])
+                tempfolders.append(row[8])
                 line_count += 1
 
-    return (users, passw, upfolders, arcfolders, host, port, tempfolders)
+    return (isEnable,isLastDest, users, passw, upfolders, arcfolders, host, port, tempfolders)
 
 
 # -----------------------------------------------
