@@ -5,7 +5,7 @@ import os.path, os
 from ftplib import FTP, error_perm
 from shutil import copy2
 import csv
-
+import pysftp as sftp
 import logging
 import time, ftplib, glob
 import subprocess
@@ -32,8 +32,19 @@ def placeFilesFTP(ftp, path, archiv):
         else:
             print("source content error")
     return
+# ==================   push_file_SFTP   ================================================
+def pushFileSFTP(ip,port,user, psw,file):
+    cnopts = sftp.CnOpts()
+    cnopts.hostkeys = None
+    s = sftp.Connection(host=ip, username= user, password=psw,
+                        port =port,cnopts=cnopts)
+  #  local_path ="C:\\Users\\wn10\\Desktop\\EnviroDoc\\LINKs\\mrc.txt"
+#    remote_path = "REMOTE FILE PATH"
 
-
+#   s.put(local_path, remote_path)
+    s.put(file)
+    s.close()
+#==========================================================================================
 def copyFilesToArc(path, archiv):
     # print ("placefile point5")
     # print (ftp, path, archiv)

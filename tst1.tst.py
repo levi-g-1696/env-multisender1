@@ -85,6 +85,7 @@ if __name__ == "__main__":
     logoldpath = ".\\LogOld\\"
     ftpExceptIParr = []
     ftpExceptEscapecount = 30
+#%%%%%%%%%  prepare file of stopflag for normal programm interruption  %%%%%%%%
     st = "c:\\ftpTransfer\\stop.conf"
     continueFlag = True
 
@@ -97,6 +98,8 @@ if __name__ == "__main__":
     f1 = open(st, 'w')
     f1.write('stopFlag=0\n')  # python will convert \n to os.linesep
     f1.close()  # you can omit in most cases as the destructor will call it
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     continueFlag = True
     ######################
     f1 = open(log, "r")
@@ -109,16 +112,14 @@ if __name__ == "__main__":
     m = 0
 
 
-#-----------
-
-#=====================================
+#((((((((((((( read coniguration file (((((((((((((((((((((((
 
     isEnable,isLastDest, users, passw, upfolder, arcfolder, destinationHOST, port, tempfolder = confreader(configFile)
-
+#((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
 # ===== prepare temporary folders from upfolders  =====
         #make tempfoders()
     PrepareTempFolders()
-
+#=============================================================
 
     while (continueFlag):
 
@@ -141,8 +142,8 @@ if __name__ == "__main__":
                 else:
                     #if host was ok - send
                 #    sendtempfoderFiles()
-                    numsent=  sendTempFolderFiles(tempfolder, i)
-                   # numsent= sendTempFolderFiles1(destinationHOST[i],port[i],tempfolder,users[i],passw[i])
+                   # numsent=  sendTempFolderFiles(tempfolder, i)
+                    numsent= sendTempFolderFiles1(destinationHOST[i],port[i],tempfolder,users[i],passw[i])
                     logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolder[i])
               #      print( "  ", numsent , " files were sent to " ,destinationHOST[i], users[i])
                     print("  ", numsent, " files were sent to ", destinationHOST[i], users[i])

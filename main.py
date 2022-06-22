@@ -105,12 +105,13 @@ if __name__ == "__main__":
                 ftpExceptEscapecount = 10
                 logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolder[i] + "," + "Error " + str(e))
         time.sleep(0.45)
+ # &&&&&&&&   tempfolders to archive   &&&&&&&&&&&&&&&&&&&&&&&&&&7
         for i in range(len(upfolder)):
             if upfolder[i] != "No":
                 source = tempfolder[i]
                 dest = arcfolder[i]
                 copyFilesToArc(source, dest)
-
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
         time.sleep(0.45)
 
         for i in range(len(upfolder)):
