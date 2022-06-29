@@ -73,6 +73,19 @@ def copyFilesToArc(path, archiv):
             print("CopytoArc : Pemission error")
     return
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+def copyFilesFromList(fileList, dest):
+
+    for localpath in fileList:
+
+        try:
+            if os.path.isfile(localpath):
+                copy2(localpath, dest)
+            else:
+                print("copyFilesFromList: source content error")
+        except PermissionError as es:
+            print("copyFilesFromList : Pemission error")
+    return
 
 ###++++++++++++++++++++++++++++++++++++
 def RemoveFilesFrom(path):
