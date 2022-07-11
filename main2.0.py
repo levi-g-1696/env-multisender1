@@ -5,6 +5,8 @@ from ftplib import FTP, error_perm
 from shutil import copy2
 import csv
 from collections import namedtuple
+
+from FoldersCheckLib import MakeStatusArray
 from  lib2 import confreader,copyFilesToArc,Remove1File,RemoveFilesFrom, removeOld,copyFilesFromList
 import logging
 import time, ftplib, glob
@@ -21,8 +23,22 @@ def AddToExceptIParr(n,value):
     for i in range(1,num):
         ftpExceptIParr.append(value)
     return
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-#############################################################3
+def GetFileNumOnTempFolders (configProps):
+  resarr = []
+  res= resarr.append( foldersStat ("c:\\ccc\\cccc",57))
+  res = resarr.append(foldersStat("c:\\cc\\bbbb", 157))
+  res = resarr.append(foldersStat("c:\\ccc\\dddd", 0))
+  return (res)
+#---------------------------------------------------------------------
+
+def CheckUpfolderStatus(status, fileNumLimit):
+    for i in range (len(status)):
+       if status[i].num>=fileNumLimit:
+         AllertOnManyFiles(status[i])
+
+################################## ###########################3
 # def PrepareTempFolders(config):
 #     tempfolder=[]
 #     for i in range(len(config.sourcefolders)):
@@ -58,6 +74,7 @@ if __name__ == "__main__":
     continueFlag = True
     session = namedtuple("session", "ip port user psw sourcefolder")
     config= namedtuple ("config","hosts ports users passwords sourcefolders")
+    foldersStat= namedtuple("foldersStat","tempFolder num") #a tuple (tempfoldr-path, files-number-in-it)
 #--------------------------------
     try:
         os.remove(st)
@@ -75,9 +92,9 @@ if __name__ == "__main__":
     ###################
     print()
     print("    ftp transfer is started\r\n")
-    j = 0
-    m = 0
-
+    count1m = 0
+    count3m = 0
+    count60m = 0
 
 #-----------
 
@@ -140,4 +157,36 @@ if __name__ == "__main__":
         tempfolder = NewPrepareTempFolders(configProps,temproot)  # make and fill tempfoders() and remove upfolders
         arcfolder = CreateArcFolders(configProps,arcroot)  # make arcfolder if not exist
         CopyAllFolders(tempfolder, arcfolder)  # we do an arc for every user-destination
+        print()
+        print()
+        print("        *******************************************")
+        print("        *        ENVIRO MULTISENDER 7.0           *")
+        print("        *   file transfer     is running          *")
+        print("        *        DO NOT CLOSE THIS WINDOW         *")
+        print("        *******************************************")
+        print("        *\n\r    paz a stacks files are moving by system schedual tool \n")
 
+        count1m= count1m + 1
+        count3m = count3m + 1
+        count60m = count60m + 1
+        if count3m % 18 == 0:  # every 3 min
+            # BatchRemoveOlderThan_15min()
+            count3m = 0
+        if count1m % 6 == 0:
+            removeOld()  # every 1 min
+
+            #  log= makeNewLogFile(log)
+
+            count1m = 0
+        if count60m % 60 ==0 :
+            statusArr = MakeStatusArray(tempfolder)
+            #if num in tempfolder >150 alert by mail
+            CheckUpfolderStatus(statusArr, 150)
+            count60m= 0
+        else:
+            time.sleep(10)
+        ##  check stop   ##
+        lines = tuple(open(st, 'r'))
+        arr = lines[0].split("=")
+        if "1" in arr[1]:
+            continueFlag = False

@@ -148,11 +148,11 @@ def confreader(file):
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
         for row in csv_reader:
-            isInable= row[0]
+            isEnable= row[0]
             if line_count == 0:
                 # print(f'Column names are {", ".join(row)}')
                 line_count += 1
-            elif isInable=="0" :
+            elif isEnable=="0" :
                 line_count += 1
             else:
                 isEnable=row[0]

@@ -7,6 +7,12 @@ from collections import namedtuple
 from  lib2 import confreader,copyFilesToArc,Remove1File,RemoveFilesFrom, removeOld,copyFilesFromList
 import logging
 import time, ftplib, glob
+# functions exported to main2: sendFolderFiles,CreateArcFolders,CopyAllFolders,NewPrepareTempFolders
+#  sendFolderFiles
+#     uses: Remove1File from lib2
+#
+#
+#
 
 import subprocess
 
