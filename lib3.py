@@ -44,6 +44,7 @@ def sendFolderFiles(session):
         else:
             print("main, 208.1,source content error")
     ftp.quit()
+
     return numsent
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -109,13 +110,13 @@ def NewPrepareTempFolders(config,temproot):
 
     for i in range(len(upfolder)):
         tempfolderStr= temproot+"\\Tmp"+  "-" + config.users[i]+"-"+config.hosts[i]+"-"+ config.ports[i]
-        new_directory(tempfolderStr)
+        new_directory(tempfolderStr) #if doesnot exist
         tempfolder.append(tempfolderStr) #??? do we need it?
         print("copying to tempfolder ",tempfolderStr)
-        key= config.sourcefolders[i]
-        fileList = upFolderDict[key]
-        copyFilesFromList(fileList, tempfolderStr) ###########must check
-    RemoveFromUpfolder(upFolderDict)
+        key= config.sourcefolders[i]  #key="c:\z\zz\zzz"
+        fileList = upFolderDict[key] #["1.txt,111.txt]
+        copyFilesFromList(fileList, tempfolderStr) ###########copy all the files to folder
+    RemoveFromUpfolder(upFolderDict) # remove only files registered in dictionary
     return tempfolder
 #=========================================
 #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -124,9 +125,9 @@ def MakeUpfolderDictionary(upfolder):
     upFolderDict = {}
     emptyArr=[]
     for i in range (len(upfolder)):
-        upFolderDict[upfolder[i]]=emptyArr
+        upFolderDict[upfolder[i]]=emptyArr  # {"c:\z\zz\zzz",[]}
     for key,val in upFolderDict.items():
-        upFolderDict[key] = GetFileList(key)
+        upFolderDict[key] = GetFileList(key)  # {c:\z\zz\zzz",[1.txt,111.txt]}
 
     return  upFolderDict
 
@@ -142,3 +143,14 @@ def GetFileList(path):
         else:
             print("source content error")
     return fileList
+#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+def RemoveEmptyFolders(path_abs):
+    root = path_abs
+    folders = list(os.walk(root))[1:]
+
+    for folder in folders:
+        # folder example: ('FOLDER/3', [], ['file'])
+        if not folder[2]:
+            print (">  removing empty temporary folder : ",folder[0] )
+            os.rmdir(folder[0])
+            time.sleep(1)

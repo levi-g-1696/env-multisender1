@@ -6,6 +6,7 @@ from collections import namedtuple
 
 import smtplib, os
 import time
+from  lib3 import RemoveEmptyFolders
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -40,10 +41,17 @@ def send_email_to_System(subject,text):
 
 
 
-def CheckUpfolderStatus(status, fileNumLimit):
-    for i in range (len(status)):
-       if status[i].num>=fileNumLimit:
-         AlertOnManyFiles(status[i].tempFolder,status[i].num)
+# def CheckUpfolderStatus(status, fileNumLimit):
+#     for i in range (len(status)):
+#        if status[i].num>=fileNumLimit:
+#          AlertOnManyFiles(status[i].tempFolder,status[i].num)
+def CheckTempFolderStatus(tempfoldersArr, fileNumLimit):
+             statusArr = MakeStatusArray(tempfoldersArr)
+             for i in range(len(statusArr)):
+                 if statusArr[i].num >= fileNumLimit:
+                     AlertOnManyFiles(statusArr[i].tempFolder,statusArr[i].num)
+
+
 def AlertOnManyFiles(folder,num):
     message= "Warning : files number in folder " +folder+ "is " + str(num)
     send_email_to_System("Server .. multisender warning",message)
@@ -52,6 +60,7 @@ def AlertOnManyFiles(folder,num):
 
 def MakeStatusArray (tempfolders) :
     statusArr=[]
+    foldersStat = namedtuple("foldersStat", "tempFolder num")  # a tuple (tempfoldr-path,
     for folder in tempfolders:
 
         count = 0
@@ -67,9 +76,10 @@ def MakeStatusArray (tempfolders) :
 
 
 if __name__ == "__main__":
-    foldersStat = namedtuple("foldersStat", "tempFolder num")  # a tuple (tempfoldr-path,
-    tempfolders= ["C:\\Users\\wn10\\Downloads","C:\\Users\\wn10\\Downloads\\ENVR TAM 160221","C:\\Users\\wn10\\Downloads\\HMH1_20211123_1805"]
-    status= MakeStatusArray(tempfolders)
+ #   foldersStat = namedtuple("foldersStat", "tempFolder num")  # a tuple (tempfoldr-path,
+ #   tempfolders= ["C:\\Users\\wn10\\Downloads","C:\\Users\\wn10\\Downloads\\ENVR TAM 160221","C:\\Users\\wn10\\Downloads\\HMH1_20211123_1805"]
+ #   status= MakeStatusArray(tempfolders)
+    temproot = ".\\Temp"
+    RemoveEmptyFolders(temproot)
 
-
-    CheckUpfolderStatus(status,250)
+ #   CheckTempFolderStatus(status,250)

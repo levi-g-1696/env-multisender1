@@ -6,11 +6,11 @@ from shutil import copy2
 import csv
 from collections import namedtuple
 
-from FoldersCheckLib import MakeStatusArray
+from FoldersCheckLib import  CheckTempFolderStatus
 from  lib2 import confreader,copyFilesToArc,Remove1File,RemoveFilesFrom, removeOld,copyFilesFromList
 import logging
 import time, ftplib, glob
-from lib3 import sendFolderFiles,CreateArcFolders,CopyAllFolders,NewPrepareTempFolders
+from lib3 import sendFolderFiles,CreateArcFolders,CopyAllFolders,NewPrepareTempFolders,RemoveEmptyFolders
 import subprocess
 
 
@@ -33,10 +33,7 @@ def GetFileNumOnTempFolders (configProps):
   return (res)
 #---------------------------------------------------------------------
 
-def CheckUpfolderStatus(status, fileNumLimit):
-    for i in range (len(status)):
-       if status[i].num>=fileNumLimit:
-         AllertOnManyFiles(status[i])
+
 
 ################################## ###########################3
 # def PrepareTempFolders(config):
@@ -75,6 +72,7 @@ if __name__ == "__main__":
     session = namedtuple("session", "ip port user psw sourcefolder")
     config= namedtuple ("config","hosts ports users passwords sourcefolders")
     foldersStat= namedtuple("foldersStat","tempFolder num") #a tuple (tempfoldr-path, files-number-in-it)
+    fileNumberLimitforAlert=150
 #--------------------------------
     try:
         os.remove(st)
@@ -174,19 +172,24 @@ if __name__ == "__main__":
             count3m = 0
         if count1m % 6 == 0:
             removeOld()  # every 1 min
-
+            RemoveEmptyFolders(temproot)
             #  log= makeNewLogFile(log)
 
             count1m = 0
         if count60m % 60 ==0 :
-            statusArr = MakeStatusArray(tempfolder)
+           # statusArr = MakeStatusArray(tempfolder)
             #if num in tempfolder >150 alert by mail
-            CheckUpfolderStatus(statusArr, 150)
+            CheckTempFolderStatus(tempfolder, fileNumberLimitforAlert)
             count60m= 0
         else:
+
             time.sleep(10)
-        ##  check stop   ##
-        lines = tuple(open(st, 'r'))
-        arr = lines[0].split("=")
-        if "1" in arr[1]:
-            continueFlag = False
+            ##  check stop   ##
+            lines = tuple(open(st, 'r'))
+            arr = lines[0].split("=")
+            if "1" in arr[1]:
+                continueFlag = False
+
+
+
+
