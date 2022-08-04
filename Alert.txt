@@ -1,0 +1,10 @@
+ 08/02/22 15:45:46 -  Receiving files warning  : no any changes on folder C:\Users\wn10\PycharmProjects\multisender1.0\output for 124 hours 31 min
+ 08/02/22 15:45:55 -  Receiving files warning  : no any changes on folder C:\Users\wn10\Downloads\HMH4_20211123_1805 for 5738 hours 15 min
+ 08/02/22 15:55:34 -  Receiving files warning  : no any changes on folder C:\Users\wn10\PycharmProjects\multisender1.0\output for 124 hours 41 min
+ 08/02/22 15:55:43 -  Receiving files warning  : no any changes on folder C:\Users\wn10\Downloads\HMH4_20211123_1805 for 5738 hours 25 min
+ 08/02/22 15:56:18 -  Receiving files warning  : no any changes on folder C:\Users\wn10\PycharmProjects\multisender1.0\output for 124 hours 42 min
+ 08/02/22 16:38:30 -  Receiving files warning  : no any changes on folder C:\Users\wn10\PycharmProjects\multisender1.0\output for 125 hours 24 min
+ 08/02/22 16:38:40 -  Receiving files warning  : no any changes on folder C:\Users\wn10\Downloads\HMH4_20211123_1805 for 5739 hours 8 min
+ 08/02/22 16:39:14 -  Receiving files warning  : no any changes on folder C:\Users\wn10\PycharmProjects\multisender1.0\output for 125 hours 25 min
+ 08/02/22 16:39:40 -  Receiving files warning  : no any changes on folder C:\Users\wn10\PycharmProjects\multisender1.0\output for 125 hours 25 min
+ 08/02/22 16:39:51 -  Receiving files warning  : no any changes on folder C:\Users\wn10\Downloads\HMH4_20211123_1805 for 5739 hours 9 min

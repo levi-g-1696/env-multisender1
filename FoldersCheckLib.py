@@ -4,7 +4,7 @@ import os.path, os
 from collections import namedtuple
 
 
-import smtplib, os
+import smtplib, os,socket
 import time
 from  lib3 import RemoveEmptyFolders
 from email.mime.multipart import MIMEMultipart
@@ -29,7 +29,7 @@ def send_email_to_System(subject,text):
         recepient = ["levig.enviromanager@gmail.com"]
 
       #  mail.login( "Tech1@enviromanager1.onmicrosoft.com", "TMerm12345!")
-        mail.login("info@enviromanager.info", "TMerm12345!")
+        mail.login("info@enviromanager.info", "enV-9nu&gr676")
 
         mail.sendmail("info@enviromanager.info", recepient, msg.as_string())
 
@@ -50,15 +50,38 @@ def CheckTempFolderStatus(tempfoldersArr, fileNumLimit):
              for i in range(len(statusArr)):
                  if statusArr[i].num >= fileNumLimit:
                      AlertOnManyFiles(statusArr[i].tempFolder,statusArr[i].num)
+#============================================
+def AlertToFile(file, message):
+    f1 = open(file, 'a')
+    timenow =  time.strftime( " %D %H:%M:%S", time.localtime())
+    f1.write(timenow + " - " + message)
+    f1.close()
+    # ===========================================
 
 
-def AlertOnManyFiles(folder,num):
-    message= "Warning : files number in folder " +folder+ "is " + str(num)
+#======================================================
+def AlertOnManyFiles(folder,num, alertFile):
+    message= "Warning : files number in folder " +folder+ "is " + str(num) +" \n"
     send_email_to_System("Server .. multisender warning",message)
-    time.sleep(1)
+    #  ====  append to alert file   ====
+    AlertToFile(alertFile,message)
+    time.sleep(3)
 
+def AlertOnNoFolderChanged(folder,num,alertFile):
+    hour= int (num/60)
+    min = int (num - hour*60)
+    message= " Receiving files warning  : no any changes on folder " + folder + " for " + str(hour) +" hours " + str(min) + " min\n"
+    send_email_to_System("Server .. multisender warning",message)
+    AlertToFile(alertFile,message)
+    time.sleep(3)
+def PrintLastFileAlert(file, linesNum):
+    with open(file, 'r') as f:
+        lines = f.read().splitlines()
+    for i in range (linesNum):
+        print (lines[-i-1])
 
 def MakeStatusArray (tempfolders) :
+    #counts how many files are in folder and makes tuple array
     statusArr=[]
     foldersStat = namedtuple("foldersStat", "tempFolder num")  # a tuple (tempfoldr-path,
     for folder in tempfolders:
@@ -74,12 +97,28 @@ def MakeStatusArray (tempfolders) :
     return statusArr
 
 
+def CheckSourcefolderStatus(upfolder, receiveFilesAlertTime, alertFile):
+    # alert when upfolder has no any change for <receiveFilesAlertTime> minutes
+    current_time = time.time()
+
+    for f in upfolder:
+        mod_time = os.path.getmtime(f)
+        noChangeTime= (current_time - mod_time) / 60
+        if (noChangeTime>= receiveFilesAlertTime):
+            AlertOnNoFolderChanged(f,noChangeTime,alertFile)
+
+    return
+#==========================================================================
+
 
 if __name__ == "__main__":
  #   foldersStat = namedtuple("foldersStat", "tempFolder num")  # a tuple (tempfoldr-path,
  #   tempfolders= ["C:\\Users\\wn10\\Downloads","C:\\Users\\wn10\\Downloads\\ENVR TAM 160221","C:\\Users\\wn10\\Downloads\\HMH1_20211123_1805"]
  #   status= MakeStatusArray(tempfolders)
-    temproot = ".\\Temp"
-    RemoveEmptyFolders(temproot)
 
+ folder2 = r"C:\Users\wn10\Downloads\HMH4_20211123_1805"
+ folder1 = r"C:\Users\wn10\PycharmProjects\multisender1.0\output"
+ upfo= [folder1,folder2]
+ CheckSourcefolderStatus(upfo,300,".\\Alert.txt")
+ PrintLastFileAlert(".\\Alert.txt",3)
  #   CheckTempFolderStatus(status,250)

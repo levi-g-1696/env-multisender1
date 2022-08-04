@@ -1,12 +1,11 @@
-
-
-import os.path, os
+import json
+import os.path, os,sys
 from ftplib import FTP, error_perm
 from shutil import copy2
 import csv
 from collections import namedtuple
 
-from FoldersCheckLib import  CheckTempFolderStatus
+from FoldersCheckLib import  CheckTempFolderStatus,CheckSourcefolderStatus,PrintLastFileAlert
 from  lib2 import confreader,copyFilesToArc,Remove1File,RemoveFilesFrom, removeOld,copyFilesFromList
 import logging
 import time, ftplib, glob
@@ -52,27 +51,52 @@ def GetFileNumOnTempFolders (configProps):
 
 
     # &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+def ReadInitCofiguration(initJsonFile):
+    with open(initJsonFile) as f:
+        return json.load(f)
+
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
 #======================================================
 
 if __name__ == "__main__":
     ## stoping option  ##
-    st = "c:\\ftpTransfer\\stop.conf"
+    #looking for init json file
+    if len(sys.argv) < 2:
+        print("You must set argument initconfig file directory as c:\\\z\\\zzz \n prefer use batch file for run")
+        time.sleep(4)
+        sys.exit()
+#    initConfigDirectoty="C:\\Users\\wn10\\PycharmProjects\\multisender1.0"
+    initConfigDirectoty = str(sys.argv[1])
+    initConfigFile= initConfigDirectoty +"\\initConfig.json"
+    configDict= ReadInitCofiguration(initConfigFile)
 
-    os.chdir("C:\\Users\\wn10\\PycharmProjects\\multisender1.0")
+ #------------------------------------------
+    #set init configuration data
+    workingDirectory= configDict["workDirectory"]
+    ftpExceptEscapecount = int(configDict["ftpExceptEscapecount"])
+    fileNumberLimitforAlert =int (configDict["fileNumberLimitforAlert"])
+    mailAlertPeriod = int(configDict["mailAlertPeriod"])
+    receiveFilesAlertTime=120
+  #------------------------------------------
+
+
+
+    os.chdir(workingDirectory)
     configFile = ".\\transferConfig22.csv"
     log = ".\\Log\\transferLog.csv"
     temproot = ".\\Temp"
     arcroot=  ".\\Arc"
     logoldpath = ".\\LogOld\\"
     ftpExceptIParr = []
-    ftpExceptEscapecount = 30
-    st = "c:\\ftpTransfer\\stop.conf"
+    st = workingDirectory + "\\stop.conf"
+    alertFile= ".\\Alert.txt"
+
     continueFlag = True
     session = namedtuple("session", "ip port user psw sourcefolder")
     config= namedtuple ("config","hosts ports users passwords sourcefolders")
     foldersStat= namedtuple("foldersStat","tempFolder num") #a tuple (tempfoldr-path, files-number-in-it)
-    fileNumberLimitforAlert=150
+
 #--------------------------------
     try:
         os.remove(st)
@@ -92,13 +116,13 @@ if __name__ == "__main__":
     print("    ftp transfer is started\r\n")
     count1m = 0
     count3m = 0
-    count60m = 0
+    countXXm = 0
 
 #-----------
 
 #=====================================
-
-    isEnable,isLastDest, users, passw, upfolder,  destinationHOST, port = confreader(configFile)
+## confreader is filtering the lines that isEnable= 0 not the best solution. but works. So will not be session on this lines
+    isEnable,isAlertEnable, users, passw, upfolder,  destinationHOST, port = confreader(configFile)
     configProps= config(destinationHOST,port,users,passw,upfolder)
 
 # ===== prepare temporary folders from upfolders  =====
@@ -149,7 +173,7 @@ if __name__ == "__main__":
                 logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolder[i] + "," + "Error " + str(e))
 
         time.sleep(0.15)
-        isEnable,isLastDest, users, passw, upfolder,  destinationHOST, port = confreader(configFile)
+        isEnable,isAlertEnable, users, passw, upfolder,  destinationHOST, port = confreader(configFile)
         configProps = config(destinationHOST, port, users, passw, upfolder)
 
         tempfolder = NewPrepareTempFolders(configProps,temproot)  # make and fill tempfoders() and remove upfolders
@@ -158,15 +182,17 @@ if __name__ == "__main__":
         print()
         print()
         print("        *******************************************")
-        print("        *        ENVIRO MULTISENDER 7.0           *")
+        print("        *        ENVIRO MULTISENDER 7.2           *")
         print("        *   file transfer     is running          *")
         print("        *        DO NOT CLOSE THIS WINDOW         *")
         print("        *******************************************")
         print("        *\n\r    paz a stacks files are moving by system schedual tool \n")
+        print("\n               L A S T   W A R N I N G S :")
+        PrintLastFileAlert( alertFile,10)
 
         count1m= count1m + 1
         count3m = count3m + 1
-        count60m = count60m + 1
+        countXXm = countXXm + 1
         if count3m % 18 == 0:  # every 3 min
             # BatchRemoveOlderThan_15min()
             count3m = 0
@@ -176,11 +202,14 @@ if __name__ == "__main__":
             #  log= makeNewLogFile(log)
 
             count1m = 0
-        if count60m % 60 ==0 :
+        if countXXm % mailAlertPeriod ==0 : #every <mailAlertPeriod> min
            # statusArr = MakeStatusArray(tempfolder)
-            #if num in tempfolder >150 alert by mail
-            CheckTempFolderStatus(tempfolder, fileNumberLimitforAlert)
-            count60m= 0
+            #if num in tempfolder >120 alert by mail
+            CheckTempFolderStatus(tempfolder, fileNumberLimitforAlert,alertFile,) # big folder is a sign of
+                                                                        # connection to destination problem
+                                                                        # must Check
+            CheckSourcefolderStatus(upfolder, receiveFilesAlertTime,alertFile)
+            countXXm= 0
         else:
 
             time.sleep(10)
@@ -188,7 +217,7 @@ if __name__ == "__main__":
             lines = tuple(open(st, 'r'))
             arr = lines[0].split("=")
             if "1" in arr[1]:
-                continueFlag = False
+                continueFlag = False # end loop and exit programm
 
 
 

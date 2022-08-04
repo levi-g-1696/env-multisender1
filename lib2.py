@@ -142,7 +142,7 @@ def confreader(file):
     host = []
     port = []
 
-    isLastDest=[]
+    isAlertEnable=[]
     tempfolders = []
     with open(file) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
@@ -156,7 +156,7 @@ def confreader(file):
                 line_count += 1
             else:
                 isEnable=row[0]
-                isLastDest.append(row[1])
+                isAlertEnable.append(row[1])
                 users.append(row[2])
                 passw.append(row[3])
                 upfolders.append(row[4])
@@ -166,7 +166,7 @@ def confreader(file):
                 tempfolders.append(row[8])
                 line_count += 1
 
-    return (isEnable,isLastDest, users, passw, upfolders,  host, port)
+    return (isEnable,isAlertEnable, users, passw, upfolders,  host, port)
 
 
 # -----------------------------------------------
