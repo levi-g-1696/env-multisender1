@@ -170,19 +170,19 @@ def confreader(file):
 
 
 # -----------------------------------------------
-def cleanTemporaryFolders():
-    tempfolders = ['F:\\TEMP\\arc1\\*',
-                   'F:\\TEMP\\arc2\\*',
-                   'F:\\TEMP\\arc3\\*',
-                   'F:\\TEMP\\arc4\\*',
-                   'F:\\TEMP\\arc5\\*',
-                   'F:\\TEMP\\arc6\\*'
-                   'F:\\TEMP\\forDEL\\*']
-    for i in range(len(tempfolders)):
-        files = glob.glob(tempfolders[i])
-        for f in files:
-            os.remove(f)
-    return
+# def cleanTemporaryFolders():
+#     tempfolders = ['F:\\TEMP\\arc1\\*',
+#                    'F:\\TEMP\\arc2\\*',
+#                    'F:\\TEMP\\arc3\\*',
+#                    'F:\\TEMP\\arc4\\*',
+#                    'F:\\TEMP\\arc5\\*',
+#                    'F:\\TEMP\\arc6\\*'
+#                    'F:\\TEMP\\forDEL\\*']
+#     for i in range(len(tempfolders)):
+#         files = glob.glob(tempfolders[i])
+#         for f in files:
+#             os.remove(f)
+#     return
 
 
 # --------------------------------------------------

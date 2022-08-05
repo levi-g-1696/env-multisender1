@@ -149,7 +149,7 @@ if __name__ == "__main__":
                 ftpExceptIP = currentSession.user + "-" + currentSession.ip + "-" + currentSession.port
 
                 if ( ftpExceptIP  in ftpExceptIParr) :
-                    ## host was not reachable not send it
+                    ## if host was not reachable then do not send it
                     ftpExceptIParr.remove(ftpExceptIP)
                     time.sleep(0.25)
                 else:
