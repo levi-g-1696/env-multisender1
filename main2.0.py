@@ -8,7 +8,7 @@ from collections import namedtuple
 from FoldersCheckLib import  CheckTempFolderStatus,CheckSourcefolderStatus,PrintLastFileAlert
 from  lib2 import confreader,copyFilesToArc,Remove1File,RemoveFilesFrom, removeOld,copyFilesFromList
 import logging
-import time, ftplib, glob
+import time, ftplib, glob, globalConfig
 from lib3 import sendFolderFiles,CreateArcFolders,CopyAllFolders,NewPrepareTempFolders,RemoveEmptyFolders
 import subprocess
 
@@ -83,18 +83,18 @@ if __name__ == "__main__":
 
 
     os.chdir(workingDirectory)
-    configFile = ".\\transferConfig22.csv"
-    log = ".\\Log\\transferLog.csv"
-    temproot = ".\\Temp"
-    arcroot=  ".\\Arc"
-    logoldpath = ".\\LogOld\\"
+    configFile = globalConfig.configFile
+    log =  globalConfig.log
+    temproot =  globalConfig.temproot
+    arcroot=   globalConfig.arcroot
+    logoldpath =  globalConfig.logoldpath
     ftpExceptIParr = []
-    st = workingDirectory + "\\stop.conf"
-    alertFile= ".\\Alert.txt"
+    st = workingDirectory +  globalConfig.stopfile
+    alertFile=  globalConfig.alertFile
 
     continueFlag = True
     session = namedtuple("session", "ip port user psw sourcefolder")
-    config= namedtuple ("config","hosts ports users passwords sourcefolders")
+    config= namedtuple ("config","isSendEnable isAlertEnable hosts ports users passwords sourcefolders")
     foldersStat= namedtuple("foldersStat","tempFolder num") #a tuple (tempfoldr-path, files-number-in-it)
 
 #--------------------------------
@@ -122,8 +122,18 @@ if __name__ == "__main__":
 
 #=====================================
 ## confreader is filtering the lines that isEnable= 0 not the best solution. but works. So will not be session on this lines
-    isEnable,isAlertEnable, users, passw, upfolder,  destinationHOST, port = confreader(configFile)
-    configProps= config(destinationHOST,port,users,passw,upfolder)
+    isEnable,isAlertEnable, users, passw, upfolder,  destinationHOST, port = confreader()
+    configProps= config(isEnable,isAlertEnable,destinationHOST,port,users,passw,upfolder)
+
+
+    # configProps= confreader()
+    # destinationHOST= configProps.hosts
+    # users=configProps.users
+    # passw= configProps.passwords
+    # port= configProps.ports
+    # upfolders= configProps.sourcefolders
+    # isEnable=configProps.isSendEnable
+    # isAlertEnable= configProps.isAlertEnable
 
 # ===== prepare temporary folders from upfolders  =====
 
@@ -173,8 +183,8 @@ if __name__ == "__main__":
                 logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolder[i] + "," + "Error " + str(e))
 
         time.sleep(0.15)
-        isEnable,isAlertEnable, users, passw, upfolder,  destinationHOST, port = confreader(configFile)
-        configProps = config(destinationHOST, port, users, passw, upfolder)
+        isEnable,isAlertEnable, users, passw, upfolder,  destinationHOST, port = confreader()
+        configProps = config(isEnable,isAlertEnable,destinationHOST, port, users, passw, upfolder)
 
         tempfolder = NewPrepareTempFolders(configProps,temproot)  # make and fill tempfoders() and remove upfolders
         arcfolder = CreateArcFolders(configProps,arcroot)  # make arcfolder if not exist

@@ -1,7 +1,10 @@
+# lib2 has repository pattern functions
+
 ##########  function send folder files by ftp  ############
 
 
-import os.path, os
+import os.path, os, globalConfig
+from collections import namedtuple
 from ftplib import FTP, error_perm
 from shutil import copy2
 import csv
@@ -9,6 +12,8 @@ import pysftp as sftp
 import logging
 import time, ftplib, glob
 import subprocess
+
+config = namedtuple("config", "isSendEnable isAlertEnable hosts ports users passwords sourcefolders")
 def placeFilesFTP(ftp, path, archiv):
     # print ("placefile point5")
     #  print (ftp, path, archiv)
@@ -131,10 +136,14 @@ def BatchRemoveOlderThan_15min():
     print("run C:\FtpTransfer\remove-older-15min.bat")
     subprocess.call([r'C:\FtpTransfer\remove-old-15.bat'])
 
+######   CONFREADER    ###########
+####     function read config file ####
 
-#### function read config file ####
-def confreader(file):
-    isEnable=False
+def confreader():
+    file= globalConfig.configFile
+    isEnable=[]
+
+
     users = []
     passw = []
     upfolders = []
@@ -166,7 +175,7 @@ def confreader(file):
                 tempfolders.append(row[8])
                 line_count += 1
 
-    return (isEnable,isAlertEnable, users, passw, upfolders,  host, port)
+    return config(isEnable,isAlertEnable, users, passw, upfolders,  host, port)
 
 
 # -----------------------------------------------
