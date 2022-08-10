@@ -52,7 +52,7 @@ def AlertToFile(file, message):
 
 #======================================================
 def AlertOnManyFiles(folder,num, alertFile):
-    message= "Warning : files number in folder " +folder+ "is " + str(num) +" \n"
+    message= "Warning : " + str(num)+" files number in folder " +folder+ " \n"
     send_email_to_System("Server .. multisender warning",message)
     #  ====  append to alert file   ====
     AlertToFile(alertFile,message)
