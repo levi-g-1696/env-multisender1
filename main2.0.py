@@ -31,7 +31,17 @@ def GetFileNumOnTempFolders (configProps):
   res = resarr.append(foldersStat("c:\\ccc\\dddd", 0))
   return (res)
 #---------------------------------------------------------------------
-
+def PrintBannerAndWarnings():
+    print()
+    print()
+    print("        *******************************************")
+    print("        *        ENVIRO MULTISENDER 7.2           *")
+    print("        *   file transfer     is running          *")
+    print("        *        DO NOT CLOSE THIS WINDOW         *")
+    print("        *******************************************")
+    print("        *\n\r    paz a stacks files are moving by system schedual tool \n")
+    print("\n               L A S T   W A R N I N G S :")
+    PrintLastFileAlert(alertFile, 16)
 
 
 ################################## ###########################3
@@ -76,7 +86,7 @@ if __name__ == "__main__":
     workingDirectory= configDict["workDirectory"]
     ftpExceptEscapecount = int(configDict["ftpExceptEscapecount"])
     fileNumberLimitforAlert =int (configDict["fileNumberLimitforAlert"])
-    mailAlertPeriod = int(configDict["mailAlertPeriod"])
+    mailAlertPeriod = 8 #int(configDict["mailAlertPeriod"])
     receiveFilesAlertTime=120
   #------------------------------------------
 
@@ -122,18 +132,19 @@ if __name__ == "__main__":
 
 #=====================================
 ## confreader is filtering the lines that isEnable= 0 not the best solution. but works. So will not be session on this lines
-    isEnable,isAlertEnable, users, passw, upfolder,  destinationHOST, port = confreader()
-    configProps= config(isEnable,isAlertEnable,destinationHOST,port,users,passw,upfolder)
+    #res= confreader()
+   # isEnable,isAlertEnable, users, passw, upfolder,  destinationHOST, port = confreader()
+#    configProps= config()
 
 
-    # configProps= confreader()
-    # destinationHOST= configProps.hosts
-    # users=configProps.users
-    # passw= configProps.passwords
-    # port= configProps.ports
-    # upfolders= configProps.sourcefolders
-    # isEnable=configProps.isSendEnable
-    # isAlertEnable= configProps.isAlertEnable
+    configProps= confreader()
+    destinationHOST= configProps.hosts
+    users=configProps.users
+    passw= configProps.passwords
+    port= configProps.ports
+    upfolders= configProps.sourcefolders
+    isEnable=configProps.isSendEnable
+    isAlertEnable= configProps.isAlertEnable
 
 # ===== prepare temporary folders from upfolders  =====
 
@@ -167,7 +178,7 @@ if __name__ == "__main__":
                 #    sendtempfoderFiles()
                     numsent= sendFolderFiles(currentSession)
 
-                    logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolder[i])
+                    logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolders[i])
               #      print( "  ", numsent , " files were sent to " ,destinationHOST[i], users[i])
                     print("  ", numsent, " files were sent to ", destinationHOST[i], users[i])
 
@@ -180,26 +191,16 @@ if __name__ == "__main__":
                 AddToExceptIParr( 10, ftpExceptIP) #10 ip numbers to array if destination is not reachable
 
               #  ftpExceptEscapecount = 10
-                logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolder[i] + "," + "Error " + str(e))
+                logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolders[i] + "," + "Error " + str(e))
 
         time.sleep(0.15)
-        isEnable,isAlertEnable, users, passw, upfolder,  destinationHOST, port = confreader()
-        configProps = config(isEnable,isAlertEnable,destinationHOST, port, users, passw, upfolder)
 
+        configProps = confreader()
         tempfolder = NewPrepareTempFolders(configProps,temproot)  # make and fill tempfoders() and remove upfolders
         arcfolder = CreateArcFolders(configProps,arcroot)  # make arcfolder if not exist
         CopyAllFolders(tempfolder, arcfolder)  # we do an arc for every user-destination
-        print()
-        print()
-        print("        *******************************************")
-        print("        *        ENVIRO MULTISENDER 7.2           *")
-        print("        *   file transfer     is running          *")
-        print("        *        DO NOT CLOSE THIS WINDOW         *")
-        print("        *******************************************")
-        print("        *\n\r    paz a stacks files are moving by system schedual tool \n")
-        print("\n               L A S T   W A R N I N G S :")
-        PrintLastFileAlert( alertFile,10)
 
+        PrintBannerAndWarnings()
         count1m= count1m + 1
         count3m = count3m + 1
         countXXm = countXXm + 1
@@ -215,10 +216,11 @@ if __name__ == "__main__":
         if countXXm % mailAlertPeriod ==0 : #every <mailAlertPeriod> min
            # statusArr = MakeStatusArray(tempfolder)
             #if num in tempfolder >120 alert by mail
-            CheckTempFolderStatus(tempfolder, fileNumberLimitforAlert,alertFile,) # big folder is a sign of
+
+            CheckTempFolderStatus(tempfolder, fileNumberLimitforAlert,alertFile) # big folder is a sign of
                                                                         # connection to destination problem
                                                                         # must Check
-            CheckSourcefolderStatus(upfolder, receiveFilesAlertTime,alertFile)
+            CheckSourcefolderStatus(upfolders, receiveFilesAlertTime,alertFile)
             countXXm= 0
         else:
 

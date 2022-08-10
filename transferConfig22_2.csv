@@ -1,5 +1,5 @@
 Enable_Sending,EnableAlert,users,passw,upfolders,arcfolders,destinationIP,port,protocol,description
-1,0,tech,erm12345!,C:\Users\wn10\Desktop\1\may22\src\sr1,C:\Users\wn10\Desktop\1\may22\arc\1,81.218.166.163,10021,FTP,ext heli
+0,0,tech,erm12345!,C:\Users\wn10\Desktop\1\may22\src\sr1,C:\Users\wn10\Desktop\1\may22\arc\1,81.218.166.163,10021,FTP,ext heli
 1,1,Mbokek,s12345,C:\Users\wn10\Desktop\1\may22\src\sr1,C:\Users\wn10\Desktop\1\may22\arc\1,192.168.4.245,21,ftp,lab lap
-1,0,testu1,erm12345!,C:\Users\wn10\Desktop\1\may22\src\sr2,C:\Users\wn10\Desktop\1\may22\arc\2,192.168.4.245,21,ftp,lab lap
-1,0,testu3,erm12345!,C:\Users\wn10\Desktop\1\may22\src\sr3,C:\Users\wn10\Desktop\1\may22\arc\3,192.168.4.245,21,SFTP,lab lap
+1,1,testu1,erm55555!,C:\Users\wn10\Desktop\1\may22\src\sr2,C:\Users\wn10\Desktop\1\may22\arc\2,192.168.4.245,21,ftp,lab lap
+1,1,testu3,erm12345!,C:\Users\wn10\Desktop\1\may22\src\sr3,C:\Users\wn10\Desktop\1\may22\arc\3,192.168.4.245,21,SFTP,lab lap

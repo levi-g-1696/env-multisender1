@@ -22,7 +22,7 @@ def send_email_to_System(subject,text):
 
         msg.attach(MIMEText(text))
 
-        mail = smtplib.SMTP("smtp.office365.com",25, timeout=20)
+        mail = smtplib.SMTP("smtp.office365.com",25, timeout=30)
         mail.ehlo()
         mail.starttls()
         mail.ehlo()
@@ -37,20 +37,11 @@ def send_email_to_System(subject,text):
 
     except Exception as e:
 
-        raise e
+        print ("smtp exception: \nmessage not sent: "+ text)
 
 
 
-# def CheckUpfolderStatus(status, fileNumLimit):
-#     for i in range (len(status)):
-#        if status[i].num>=fileNumLimit:
-#          AlertOnManyFiles(status[i].tempFolder,status[i].num)
-def CheckTempFolderStatus(tempfoldersArr, fileNumLimit):
-             statusArr = MakeStatusArray(tempfoldersArr)
-             for i in range(len(statusArr)):
-                 if statusArr[i].num >= fileNumLimit:
-                     AlertOnManyFiles(statusArr[i].tempFolder,statusArr[i].num)
-#============================================
+
 def AlertToFile(file, message):
     f1 = open(file, 'a')
     timenow =  time.strftime( " %D %H:%M:%S", time.localtime())
@@ -77,6 +68,8 @@ def AlertOnNoFolderChanged(folder,num,alertFile):
 def PrintLastFileAlert(file, linesNum):
     with open(file, 'r') as f:
         lines = f.read().splitlines()
+    if len(lines) < linesNum:
+        linesNum= len(lines)
     for i in range (linesNum):
         print (lines[-i-1])
 
@@ -87,15 +80,27 @@ def MakeStatusArray (tempfolders) :
     for folder in tempfolders:
 
         count = 0
+        if os.path.isdir(folder):  # if it exists count files , else return count 0
         # Iterate directory
-        for path in os.listdir(folder):
+          for path in os.listdir(folder):
             # check if current path is a file
-            if os.path.isfile(os.path.join(folder, path)):
+             if os.path.isfile(os.path.join(folder, path)):
                 count += 1
         statusArr.append(foldersStat(folder,count))
 
     return statusArr
-
+#==================================================================
+# def CheckUpfolderStatus(status, fileNumLimit):
+#     for i in range (len(status)):
+#        if status[i].num>=fileNumLimit:
+#          AlertOnManyFiles(status[i].tempFolder,status[i].num)
+#=======================================================================
+def CheckTempFolderStatus(tempfoldersArr, fileNumLimit,alertFile):
+             statusArr = MakeStatusArray(tempfoldersArr)
+             for i in range(len(statusArr)):
+                 if statusArr[i].num >= fileNumLimit:
+                     AlertOnManyFiles(statusArr[i].tempFolder,statusArr[i].num,alertFile)
+#============================================
 
 def CheckSourcefolderStatus(upfolder, receiveFilesAlertTime, alertFile):
     # alert when upfolder has no any change for <receiveFilesAlertTime> minutes

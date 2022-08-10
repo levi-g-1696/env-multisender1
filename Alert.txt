@@ -8,3 +8,13 @@
  08/02/22 16:39:14 -  Receiving files warning  : no any changes on folder C:\Users\wn10\PycharmProjects\multisender1.0\output for 125 hours 25 min
  08/02/22 16:39:40 -  Receiving files warning  : no any changes on folder C:\Users\wn10\PycharmProjects\multisender1.0\output for 125 hours 25 min
  08/02/22 16:39:51 -  Receiving files warning  : no any changes on folder C:\Users\wn10\Downloads\HMH4_20211123_1805 for 5739 hours 9 min
+ 08/08/22 16:29:06 - Warning : files number in folder .\Temp\Tmp-testu1-192.168.4.245-21is 304 
+ 08/08/22 16:30:39 - Warning : files number in folder .\Temp\Tmp-testu1-192.168.4.245-21is 304 
+ 08/10/22 16:33:06 - Warning : files number in folder .\Temp\Tmp-testu1-192.168.4.245-21is 304 
+ 08/10/22 16:33:16 -  Receiving files warning  : no any changes on folder C:\Users\wn10\Desktop\1\may22\src\sr1 for 48 hours 38 min
+ 08/10/22 16:33:26 -  Receiving files warning  : no any changes on folder C:\Users\wn10\Desktop\1\may22\src\sr2 for 48 hours 38 min
+ 08/10/22 16:33:37 -  Receiving files warning  : no any changes on folder C:\Users\wn10\Desktop\1\may22\src\sr3 for 48 hours 5 min
+ 08/10/22 16:35:10 - Warning : files number in folder .\Temp\Tmp-testu1-192.168.4.245-21is 304 
+ 08/10/22 16:35:20 -  Receiving files warning  : no any changes on folder C:\Users\wn10\Desktop\1\may22\src\sr1 for 48 hours 40 min
+ 08/10/22 16:35:29 -  Receiving files warning  : no any changes on folder C:\Users\wn10\Desktop\1\may22\src\sr2 for 48 hours 40 min
+ 08/10/22 16:35:38 -  Receiving files warning  : no any changes on folder C:\Users\wn10\Desktop\1\may22\src\sr3 for 48 hours 7 min

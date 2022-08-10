@@ -175,8 +175,8 @@ def confreader():
                 tempfolders.append(row[8])
                 line_count += 1
 
-    return config(isEnable,isAlertEnable, users, passw, upfolders,  host, port)
-
+    res = config(isEnable,isAlertEnable, host,port,users, passw, upfolders )
+    return res
 
 # -----------------------------------------------
 # def cleanTemporaryFolders():
