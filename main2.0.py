@@ -12,6 +12,7 @@ import time, ftplib, glob, globalConfig
 from lib3 import sendFolderFiles,CreateArcFolders,CopyAllFolders,NewPrepareTempFolders,RemoveEmptyFolders
 import subprocess
 
+ftpExceptIParr = []
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -112,6 +113,10 @@ if __name__ == "__main__":
         os.remove(st)
     except FileNotFoundError as e:
         print("Cannot find stop.conf")
+    try:
+        os.remove(globalConfig.alertFile)
+    except FileNotFoundError as e:
+        print("Cannot find "+globalConfig.alertFile )
 
     f1 = open(st, 'w')
     f1.write('stopFlag=0\n')  # python will convert \n to os.linesep
@@ -122,6 +127,9 @@ if __name__ == "__main__":
     logfileid = f1.fileno
     f1.close
     ###################
+    f1 = open(globalConfig.alertFile, 'w')
+    f1.write(' \n')  # python will convert \n to os.linesep
+    f1.close()
     print()
     print("    ftp transfer is started\r\n")
     count1m = 0
@@ -217,10 +225,10 @@ if __name__ == "__main__":
            # statusArr = MakeStatusArray(tempfolder)
             #if num in tempfolder >120 alert by mail
 
-            CheckTempFolderStatus(tempfolder, fileNumberLimitforAlert,alertFile) # big folder is a sign of
+            CheckTempFolderStatus(tempfolder, fileNumberLimitforAlert) # big folder is a sign of
                                                                         # connection to destination problem
                                                                         # must Check
-            CheckSourcefolderStatus(upfolders, receiveFilesAlertTime,alertFile)
+            CheckSourcefolderStatus(upfolders, receiveFilesAlertTime)
             countXXm= 0
         else:
 

@@ -5,7 +5,7 @@ from collections import namedtuple
 
 
 import smtplib, os,socket
-import time
+import time, globalConfig
 from  lib3 import RemoveEmptyFolders
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -51,19 +51,25 @@ def AlertToFile(file, message):
 
 
 #======================================================
-def AlertOnManyFiles(folder,num, alertFile):
+def AlertOnManyFiles(folder,num):
     message= "Warning : " + str(num)+" files number in folder " +folder+ " \n"
     send_email_to_System("Server .. multisender warning",message)
     #  ====  append to alert file   ====
+    alertFile= globalConfig.alertFile
     AlertToFile(alertFile,message)
+    alertHisoryFile= globalConfig.alertHistory
+    AlertToFile(alertHisoryFile, message)
     time.sleep(3)
 
-def AlertOnNoFolderChanged(folder,num,alertFile):
+def AlertOnNoFolderChanged(folder,num):
     hour= int (num/60)
     min = int (num - hour*60)
     message= " Receiving files warning  : no any changes on folder " + folder + " for " + str(hour) +" hours " + str(min) + " min\n"
     send_email_to_System("Server .. multisender warning",message)
-    AlertToFile(alertFile,message)
+    alertFile = globalConfig.alertFile
+    AlertToFile(alertFile, message)
+    alertHisoryFile = globalConfig.alertHistory
+    AlertToFile(alertHisoryFile, message)
     time.sleep(3)
 def PrintLastFileAlert(file, linesNum):
     with open(file, 'r') as f:
@@ -95,14 +101,14 @@ def MakeStatusArray (tempfolders) :
 #        if status[i].num>=fileNumLimit:
 #          AlertOnManyFiles(status[i].tempFolder,status[i].num)
 #=======================================================================
-def CheckTempFolderStatus(tempfoldersArr, fileNumLimit,alertFile):
+def CheckTempFolderStatus(tempfoldersArr, fileNumLimit):
              statusArr = MakeStatusArray(tempfoldersArr)
              for i in range(len(statusArr)):
                  if statusArr[i].num >= fileNumLimit:
-                     AlertOnManyFiles(statusArr[i].tempFolder,statusArr[i].num,alertFile)
+                     AlertOnManyFiles(statusArr[i].tempFolder,statusArr[i].num)
 #============================================
 
-def CheckSourcefolderStatus(upfolder, receiveFilesAlertTime, alertFile):
+def CheckSourcefolderStatus(upfolder, receiveFilesAlertTime):
     # alert when upfolder has no any change for <receiveFilesAlertTime> minutes
     current_time = time.time()
 
@@ -110,7 +116,7 @@ def CheckSourcefolderStatus(upfolder, receiveFilesAlertTime, alertFile):
         mod_time = os.path.getmtime(f)
         noChangeTime= (current_time - mod_time) / 60
         if (noChangeTime>= receiveFilesAlertTime):
-            AlertOnNoFolderChanged(f,noChangeTime,alertFile)
+            AlertOnNoFolderChanged(f,noChangeTime)
 
     return
 #==========================================================================
