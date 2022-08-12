@@ -13,7 +13,7 @@ import logging
 import time, ftplib, glob
 import subprocess
 
-config = namedtuple("config", "isSendEnable isAlertEnable hosts ports users passwords sourcefolders")
+
 def placeFilesFTP(ftp, path, archiv):
     # print ("placefile point5")
     #  print (ftp, path, archiv)
@@ -136,7 +136,7 @@ def BatchRemoveOlderThan_15min():
     print("run C:\FtpTransfer\remove-older-15min.bat")
     subprocess.call([r'C:\FtpTransfer\remove-old-15.bat'])
 
-######   CONFREADER    ###########
+#################     CONFREADER    ####################################
 ####     function read config file ####
 
 def confreader():
@@ -152,7 +152,7 @@ def confreader():
     port = []
 
     isAlertEnable=[]
-    tempfolders = []
+    protocol = []
     with open(file) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
@@ -169,13 +169,13 @@ def confreader():
                 users.append(row[2])
                 passw.append(row[3])
                 upfolders.append(row[4])
-                arcfolders.append(row[5])
+            #    arcfolders.append(row[5])
                 host.append(row[6])
                 port.append(row[7])
-                tempfolders.append(row[8])
+                protocol.append(row[8])
                 line_count += 1
 
-    res = config(isEnable,isAlertEnable, host,port,users, passw, upfolders )
+    res = globalConfig.config(isEnable,isAlertEnable, host,port,protocol,users, passw, upfolders )
     return res
 
 # -----------------------------------------------

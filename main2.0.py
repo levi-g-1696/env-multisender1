@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
     continueFlag = True
     session = namedtuple("session", "ip port user psw sourcefolder")
-    config= namedtuple ("config","isSendEnable isAlertEnable hosts ports users passwords sourcefolders")
+
     foldersStat= namedtuple("foldersStat","tempFolder num") #a tuple (tempfoldr-path, files-number-in-it)
 
 #--------------------------------
@@ -153,6 +153,7 @@ if __name__ == "__main__":
     upfolders= configProps.sourcefolders
     isEnable=configProps.isSendEnable
     isAlertEnable= configProps.isAlertEnable
+    protocol= configProps.protocol
 
 # ===== prepare temporary folders from upfolders  =====
 
