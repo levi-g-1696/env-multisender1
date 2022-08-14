@@ -1,0 +1,9 @@
+protocol="SHARING"
+protocol= protocol.lower()
+isSFTP = protocol.__contains__("sftp")
+isFtp = protocol.__contains__("ftp") and not(protocol.__contains__("sftp"))
+isSmb= protocol.__contains__("smb") or protocol.__contains__("shar")
+print (protocol)
+print ("isSFTP ", isSFTP)
+print ("isFTP ", isFtp)
+print ("isSMB ", isSmb)

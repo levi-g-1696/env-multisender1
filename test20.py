@@ -25,10 +25,10 @@ connection_info = {
     'port': 22
 }
 connection_info2 = {
-    'server': "192.168.4.240",
-    'user': "newtest",
+    'server': "2.55.89.1",
+    'user': "test",
     'passwd': "erm12345!",
-    'port': 6022
+    'port': 22
 }
 cnopts = sftp.CnOpts()
 cnopts.hostkeys = None
@@ -43,8 +43,22 @@ def push_file_to_server():
 #   s.put(local_path, remote_path)
     s.put(local_path)
     s.close()
+#=============================
+def push_file_SFTPnew(ip,port,user, psw,file):
+    # ip user psw file - strings
+    # port is string
+    cnopts = sftp.CnOpts()
+    cnopts.hostkeys = None
+    s = sftp.Connection(host=ip, username= user, password=psw,
+                        port = int(port),cnopts=cnopts)
+  #  local_path ="C:\\Users\\wn10\\Desktop\\EnviroDoc\\LINKs\\mrc.txt"
+#    remote_path = "REMOTE FILE PATH"
 
+#   s.put(local_path, remote_path)
+    s.put(file)
+    s.close()
 
+#==============================
 def push_file_SFTP(ip,port,user, psw,file):
     s = sftp.Connection(host=ip, username= user, password=psw,
                         port =port,cnopts=cnopts)
@@ -67,13 +81,13 @@ def PushFileSFTP_paramiko(ip,port,user, psw,file):
 
 #push_file_to_server()
 paramiko.util.log_to_file("paramiko.log")
-host=connection_info2['server']
-username=connection_info2['user']
-port = connection_info2['port']
-password=connection_info2['passwd']
+host=connection_info['server']
+username=connection_info['user']
+port = connection_info['port']
+password=connection_info['passwd']
 filePath="C:\\Users\\wn10\\Desktop\\EnviroDoc\\LINKs\\mrc.txt"
 port=connection_info['port']
 cnopts=cnopts
-push_file_SFTP(host,port,username,password,filePath)
+push_file_SFTPnew(host,port,username,password,filePath)
 #PushFileSFTP_paramiko(host,6022,username,password,filePath)
 

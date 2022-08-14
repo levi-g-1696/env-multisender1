@@ -36,7 +36,7 @@ def PrintBannerAndWarnings():
     print()
     print()
     print("        *******************************************")
-    print("        *        ENVIRO MULTISENDER 7.2           *")
+    print("        *        ENVIRO MULTISENDER 7.33           *")
     print("        *   file transfer     is running          *")
     print("        *        DO NOT CLOSE THIS WINDOW         *")
     print("        *******************************************")
