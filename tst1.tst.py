@@ -2,8 +2,6 @@ import json,time
 import datetime
 import subprocess
 import sys,os
-
-
 if len(sys.argv) < 2:
     print ("You must set argument!!!")
 

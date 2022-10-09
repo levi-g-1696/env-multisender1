@@ -8,6 +8,7 @@ from  lib2 import confreader,copyFilesToArc,Remove1File,RemoveFilesFrom, removeO
 import logging
 import time, ftplib, glob
 import pysftp as sftp
+import globalConfig
 import paramiko
 
 # functions exported to main2: sendFolderFiles,CreateArcFolders,CopyAllFolders,NewPrepareTempFolders
@@ -19,18 +20,55 @@ import paramiko
 
 import subprocess
 
-def sendFolderFiles(session):
+
+
+
+
+def sendFolderFilesV7_33(session):# not good: tha files mus disapeer from upfolder, becouse every destinationn is a different channel
     protocol= str(session.protocol)
     protocol= protocol.lower()
     isSFTP = protocol.__contains__("sftp")
     isFtp = protocol.__contains__("ftp") and not (protocol.__contains__("sftp"))
     isSmb = protocol.__contains__("smb") or protocol.__contains__("shar")
 
+    fileList = session.fileList   # must be full path for every file
+   # upFolderPath = upfolder[i]
+    #     print("prepare list for ftp, path :", tempFolderPath)
+    numsent = 0
+    for fileLocalpath in fileList:
+
+
+
+        if os.path.isfile(fileLocalpath):
+            try:
+                if (isFtp) : push_file_FTP(session.ip,session.port,session.user, session.psw,fileLocalpath)
+                elif (isSFTP ) : push_file_SFTP(session.ip,session.port,session.user, session.psw,fileLocalpath)
+                elif (isSmb): print ("smb protocol is not impemented")
+                numsent = numsent + 1
+                 # print("placefile FTP  ", localpath)
+                time.sleep(0.03)
+                print("SYSTEM IS REMOVING" + fileLocalpath)
+                Remove1File(fileLocalpath)
+            except ftplib.all_errors as e:
+                print("  ===> F T P exception on sending " , fileLocalpath, " user ", session.user, " to ", session.ip)
+            except sftp.exceptions.ConnectionException  as es:
+                raise es
+        else:
+            print("sendFolderFiles(session), 208.1,source content error")
 
 
 
 
-    tempFolderPath = session.sourcefolder
+    return numsent
+
+#=========================================================================
+def sendFolderFiles(session):
+    protocol= str(session.protocol)
+    protocol= protocol.lower()
+    isSFTP = protocol.__contains__("sftp")
+    isFtp = protocol.__contains__("ftp") and not (protocol.__contains__("sftp"))
+    isSmb = protocol.__contains__("smb") or protocol.__contains__("shar")
+    tempFolderPath = session.sourcefolder   # may be a mistake in name
    # upFolderPath = upfolder[i]
     #     print("prepare list for ftp, path :", tempFolderPath)
     numsent = 0
@@ -59,7 +97,7 @@ def sendFolderFiles(session):
 
 
     return numsent
-
+#=======================================================================
 def sendFolderFilesOldVer(session):
     protocol= str(session.protocol)
     protocol= protocol.lower()
@@ -98,7 +136,8 @@ def sendFolderFilesOldVer(session):
 
 
     return numsent
-#+++++++++++++++++++++
+#+++++++++++++++++++++==============================================
+
 def push_file_FTP(ip,port,user, psw,filePath):
     ftp = FTP()
     ftp.connect(ip, int(port))
@@ -181,7 +220,12 @@ def RemoveFromUpfolder(upfolderDict):
          except PermissionError as es:
             print("RemoveFromUpfolder : Pemission error")
     return
+
+
+#===================================
+
 #====================================
+
 
 def NewPrepareTempFolders(config,temproot):
     tempfolder = []

@@ -2,6 +2,6 @@ Enable_Sending,EnableAlert,users,passw,upfolders,arcfolders,destinationIP,port,p
 0,0,tech,erm12345!,C:\Users\wn10\Desktop\1\may22\src\sr1,C:\Users\wn10\Desktop\1\may22\arc\1,81.218.166.163,10021,FTP,ext heli
 0,1,Mbokek,s12345,C:\Users\wn10\Desktop\1\may22\src\sr1,C:\Users\wn10\Desktop\1\may22\arc\1,192.168.4.245,21,ftp,lab lap
 0,1,testu1,erm55555!,C:\Users\wn10\Desktop\1\may22\src\sr2,C:\Users\wn10\Desktop\1\may22\arc\2,192.168.4.245,21,ftp,lab lap
-0,1,testu3,erm12345!,C:\Users\wn10\Desktop\1\may22\src\sr3,C:\Users\wn10\Desktop\1\may22\arc\3,192.168.4.245,21,FTP,lab lap
+1,1,testu3,erm12345!,C:\Users\wn10\Desktop\1\may22\src\sr3,C:\Users\wn10\Desktop\1\may22\arc\3,192.168.4.245,21,FTP,lab lap
 0,0,newtest,erm12345!,C:\Users\wn10\Desktop\1\may22\src\sr1,,2.55.89.1,22,SFTP,virt sftp
-1,0,newtest,erm12345!,C:\Users\wn10\Desktop\1\may22\src\sr1,,84.110.115.67,22,SFTP,virt sftp
+0,0,newtest,erm12345!,C:\Users\wn10\Desktop\1\may22\src\sr1,,84.110.115.67,22,SFTP,virt sftp

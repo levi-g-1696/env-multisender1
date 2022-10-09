@@ -36,11 +36,11 @@ def PrintBannerAndWarnings():
     print()
     print()
     print("        *******************************************")
-    print("        *        ENVIRO MULTISENDER 7.2           *")
+    print("        *        ENVIRO MULTISENDER 7.33           *")
     print("        *   file transfer     is running          *")
     print("        *        DO NOT CLOSE THIS WINDOW         *")
     print("        *******************************************")
-    print("       ")
+    print("        *\n\r    paz a stacks files are moving by system schedual tool \n")
     print("\n               L A S T   W A R N I N G S :")
     PrintLastFileAlert(alertFile, 16)
 
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     alertFile=  globalConfig.alertFile
 
     continueFlag = True
-    session = namedtuple("session", "ip port protocol user psw sourcefolder")
+    session = namedtuple("session", "ip port protocol user psw fileList")
 
     foldersStat= namedtuple("foldersStat","tempFolder num") #a tuple (tempfoldr-path, files-number-in-it)
 
@@ -157,11 +157,22 @@ if __name__ == "__main__":
 
 # ===== prepare temporary folders from upfolders  =====
 
-    tempfolder = NewPrepareTempFolders(configProps,temproot)  #make and fill tempfoders() and remove upfolders
+  #  tempfolder = NewPrepareTempFolders(configProps,temproot)  #make and fill tempfoders() and remove upfolders
     arcfolder= CreateArcFolders(configProps,arcroot) # make arcfolder if not exist
-    CopyAllFolders(tempfolder, arcfolder) #we do an arc for every user-destination
+  #  CopyAllFolders(tempfolder, arcfolder) #we do an arc for every user-destination
 
-#    RemoveFromUpfolder(filedict) is in NewPrepareTempFolders
+    #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    tempFolderPath= "C:\\Users\\wn10\\Desktop\\1\\may22\\src\\sr3"
+
+    testfilelist= []
+    for name in os.listdir(tempFolderPath):
+        if len(tempFolderPath) > 0:
+          fileLocalpath = os.path.join(tempFolderPath, name)
+
+          testfilelist.append(fileLocalpath)
+          #$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4
+
+    #    RemoveFromUpfolder(filedict) is in NewPrepareTempFolders
     while (continueFlag):
 
         ftp = FTP()
@@ -175,7 +186,8 @@ if __name__ == "__main__":
 
         for i in range(len(users)):
             try:
-                currentSession = session(destinationHOST[i], port[i],protocol[i], users[i], passw[i], tempfolder[i])
+       #         currentSession = session(destinationHOST[i], port[i],protocol[i], users[i], passw[i], tempfolder[i])
+                currentSession = session(destinationHOST[i], port[i], protocol[i], users[i], passw[i], testfilelist)
                 ftpExceptIP = currentSession.user + "-" + currentSession.ip + "-" + currentSession.port
 
                 if ( ftpExceptIP  in ftpExceptIParr) :
