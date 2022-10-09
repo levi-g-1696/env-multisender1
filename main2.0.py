@@ -3,12 +3,13 @@ import os.path, os,sys
 from ftplib import FTP, error_perm
 from shutil import copy2
 import csv
+import gc
 from collections import namedtuple
 
 from FoldersCheckLib import  CheckTempFolderStatus,CheckSourcefolderStatus,PrintLastFileAlert
 from  lib2 import confreader,copyFilesToArc,Remove1File,RemoveFilesFrom, removeOld,copyFilesFromList
 import logging
-import time, ftplib, glob, globalConfig
+import time, ftplib, glob, globalConfig, datetime
 from lib3 import sendFolderFiles,CreateArcFolders,CopyAllFolders,NewPrepareTempFolders,RemoveEmptyFolders
 import subprocess
 
@@ -23,6 +24,15 @@ def AddToExceptIParr(n,value):
     for i in range(1,num):
         ftpExceptIParr.append(value)
     return
+
+#++++++++++++++++++++++++++++++++++++++++++++++
+def RemoveAllIPfromExeptArr(empty_arg):
+    del ftpExceptIParr[:]
+    return
+
+
+
+
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 def GetFileNumOnTempFolders (configProps):
@@ -67,6 +77,28 @@ def ReadInitCofiguration(initJsonFile):
         return json.load(f)
 
 #&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+def doEveryXmin1Arg(lastRunTime,minNum , function,arg1):
+      dt = datetime.datetime.now()
+      newts= lastRunTime
+      if dt.timestamp() >= lastRunTime +minNum*60  :
+        function(arg1)
+        newts=dt.timestamp()
+    
+      return newts
+#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+def doEveryXmin2Arg(lastRunTime,minNum , function,arg1,arg2):
+    dt = datetime.datetime.now()
+    newts= lastRunTime
+    if dt.timestamp() >= lastRunTime +minNum*60  :
+
+        
+        newts=dt.timestamp()
+        d1= datetime.datetime.now        
+        function(arg1,arg2)
+        d2= datetime.datetime.now
+  #      logging.info("," + "before function " + str(function) + "," + str(d1) + "," + "after:" + "," + str(d2))
+    return newts
+
 
 #======================================================
 
@@ -102,6 +134,12 @@ if __name__ == "__main__":
     ftpExceptIParr = []
     st = workingDirectory +  globalConfig.stopfile
     alertFile=  globalConfig.alertFile
+    dt= datetime.datetime.now()
+    lastRunTime0= dt.timestamp()
+    lastRunTime1= dt.timestamp()
+    lastRunTime2= dt.timestamp()
+    lastRunTime3= dt.timestamp()
+  
 
     continueFlag = True
     session = namedtuple("session", "ip port protocol user psw sourcefolder")
@@ -162,8 +200,8 @@ if __name__ == "__main__":
     CopyAllFolders(tempfolder, arcfolder) #we do an arc for every user-destination
 
 #    RemoveFromUpfolder(filedict) is in NewPrepareTempFolders
-    while (continueFlag):
-
+    while (continueFlag):     
+       
         ftp = FTP()
 
         logging.basicConfig(filename=log, level=logging.INFO, format='%(asctime)s %(message)s',
@@ -176,69 +214,70 @@ if __name__ == "__main__":
         for i in range(len(users)):
             try:
                 currentSession = session(destinationHOST[i], port[i],protocol[i], users[i], passw[i], tempfolder[i])
-                ftpExceptIP = currentSession.user + "-" + currentSession.ip + "-" + currentSession.port
+                ftpExceptIP =  currentSession.ip + "-" + currentSession.port
 
                 if ( ftpExceptIP  in ftpExceptIParr) :
                     ## if host was not reachable then do not send it
-                    ftpExceptIParr.remove(ftpExceptIP)
-                    time.sleep(0.25)
+                    logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolders[i]+ ","+"skiped")
+
+                  #  ftpExceptIParr.remove(ftpExceptIP)
+
                 else:
                     #if host was ok - send
                 #    sendtempfoderFiles()
                     numsent= sendFolderFiles(currentSession)
 
-                    logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolders[i])
+                    logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolders[i]+ ","+str(numsent))
               #      print( "  ", numsent , " files were sent to " ,destinationHOST[i], users[i])
                     print("  ", numsent, " files were sent to ", destinationHOST[i], users[i])
 
 
             except ftplib.all_errors as e:
                 print(" \n> > > >   F T P exception  - ", destinationHOST[i], users[i],str(e),"\n")
+                logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolders[i] + "," + "FTP-exception")
 
-                time.sleep(0.1)
+                ftpExceptIParr.append(ftpExceptIP)
+              #  time.sleep(0.1)
 
-                AddToExceptIParr( 10, ftpExceptIP) #10 ip numbers to array if destination is not reachable
+              #  AddToExceptIParr( 10, ftpExceptIP) #10 ip numbers to array if destination is not reachable
 
               #  ftpExceptEscapecount = 10
                 logging.info("," + destinationHOST[i] + "," + users[i] + "," + upfolders[i] + "," + "Error " + str(e))
 
         time.sleep(0.15)
+        lastRunTime0 = doEveryXmin1Arg(lastRunTime0,1,function= RemoveAllIPfromExeptArr,arg1= "") # lastRunTime0 will be used as arg on next iteration
+        lastRunTime1 = doEveryXmin1Arg(lastRunTime1,1,function= RemoveEmptyFolders,arg1= temproot)
+        lastRunTime2 = doEveryXmin2Arg(lastRunTime2,mailAlertPeriod,function= CheckTempFolderStatus,arg1= tempfolder,arg2= fileNumberLimitforAlert)
+        lastRunTime3 = doEveryXmin2Arg(lastRunTime3,mailAlertPeriod,function= CheckSourcefolderStatus,arg1= upfolders, arg2=receiveFilesAlertTime )
+       # if count1m % 6 == 0:
+          #  removeOld()  # every 1 min
+    #        RemoveEmptyFolders(temproot)
+            #  log= makeNewLogFile(log)
 
+         #   count1m = 0
+       # if countXXm % mailAlertPeriod ==0 : #every <mailAlertPeriod> min
+           # statusArr = MakeStatusArray(tempfolder)
+            #if num in tempfolder >120 alert by mail
+
+       #     CheckTempFolderStatus(tempfolder, fileNumberLimitforAlert) # big folder is a sign of
+                                                                        # connection to destination problem
+                                                                        # must Check
+        #    CheckSourcefolderStatus(upfolders, receiveFilesAlertTime)
+          #  countXXm= 0
+        
+        PrintBannerAndWarnings()
+        print("sleep10")
+        time.sleep(10)
+            ##  check stop   ##
+        lines = tuple(open(st, 'r'))
+        arr = lines[0].split("=")
+        if "1" in arr[1]:
+                continueFlag = False # end loop and exit programm
         configProps = confreader()
         tempfolder = NewPrepareTempFolders(configProps,temproot)  # make and fill tempfoders() and remove upfolders
         arcfolder = CreateArcFolders(configProps,arcroot)  # make arcfolder if not exist
         CopyAllFolders(tempfolder, arcfolder)  # we do an arc for every user-destination
-
-        PrintBannerAndWarnings()
-        count1m= count1m + 1
-        count3m = count3m + 1
-        countXXm = countXXm + 1
-        if count3m % 18 == 0:  # every 3 min
-            # BatchRemoveOlderThan_15min()
-            count3m = 0
-        if count1m % 6 == 0:
-            removeOld()  # every 1 min
-            RemoveEmptyFolders(temproot)
-            #  log= makeNewLogFile(log)
-
-            count1m = 0
-        if countXXm % mailAlertPeriod ==0 : #every <mailAlertPeriod> min
-           # statusArr = MakeStatusArray(tempfolder)
-            #if num in tempfolder >120 alert by mail
-
-            CheckTempFolderStatus(tempfolder, fileNumberLimitforAlert) # big folder is a sign of
-                                                                        # connection to destination problem
-                                                                        # must Check
-            CheckSourcefolderStatus(upfolders, receiveFilesAlertTime)
-            countXXm= 0
-        else:
-
-            time.sleep(10)
-            ##  check stop   ##
-            lines = tuple(open(st, 'r'))
-            arr = lines[0].split("=")
-            if "1" in arr[1]:
-                continueFlag = False # end loop and exit programm
+        
 
 
 

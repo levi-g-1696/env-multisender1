@@ -10,6 +10,7 @@ import time, ftplib, glob
 import pysftp as sftp
 import globalConfig
 import paramiko
+from debuglogger import deblogger
 
 # functions exported to main2: sendFolderFiles,CreateArcFolders,CopyAllFolders,NewPrepareTempFolders
 #  sendFolderFiles
@@ -73,9 +74,7 @@ def sendFolderFiles(session):
     #     print("prepare list for ftp, path :", tempFolderPath)
     numsent = 0
     for name in os.listdir(tempFolderPath):
-
         fileLocalpath = os.path.join(tempFolderPath, name)
-
         if os.path.isfile(fileLocalpath):
             try:
                 if (isFtp) : push_file_FTP(session.ip,session.port,session.user, session.psw,fileLocalpath)
@@ -237,9 +236,12 @@ def NewPrepareTempFolders(config,temproot):
         tempfolderStr= temproot+"\\Tmp"+  "-" + config.users[i]+"-"+config.hosts[i]+"-"+ config.ports[i]
         new_directory(tempfolderStr) #if doesnot exist
         tempfolder.append(tempfolderStr) #??? do we need it?
+        
         print("copying to tempfolder ",tempfolderStr)
         key= config.sourcefolders[i]  #key="c:\z\zz\zzz"
+        #d101 debug
         fileList = upFolderDict[key] #["1.txt,111.txt]
+        deblogger(key,fileList,"") #debug
         copyFilesFromList(fileList, tempfolderStr) ###########copy all the files to folder
     RemoveFromUpfolder(upFolderDict) # remove only files registered in dictionary
     return tempfolder
@@ -278,4 +280,4 @@ def RemoveEmptyFolders(path_abs):
         if not folder[2]:
             print (">  removing empty temporary folder : ",folder[0] )
             os.rmdir(folder[0])
-            time.sleep(1)
+            time.sleep(0.01)

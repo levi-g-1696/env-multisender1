@@ -122,15 +122,14 @@ def Remove1File(localpath):
             xxxx = 1  ## no op to close localpath
         if os.path.isfile(localpath):
             # open
-            os.remove(localpath)
+            delstr= '"del ' +localpath +'"'
+            os.system('cmd /c ' + delstr)
 
         else:
             print("copyFileToArc: source content error")
     except PermissionError as es:
         print("exception point 102030")
     return
-
-
 ########++++++++++++++++++++++++++++++++++
 def BatchRemoveOlderThan_15min():
     print("run C:\FtpTransfer\remove-older-15min.bat")

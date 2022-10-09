@@ -1,28 +1,18 @@
-import os
-import subprocess
-import datetime
-dt1= datetime.datetime.now()
+from  tkinter import *
 
-file= r"C:\Users\wn10\Desktop\1\zmani\Yatveta\fzs-2022-07-29.log"
-file= r"C:\Users\wn10\Desktop\1\zmani\Yatveta\fzs-2022-07-29.log"
-os.system('cmd /c  "del C:\\Users\\wn10\\Desktop\\1\\zmani\\Yatveta\\fzs-2022-07-230.log "')
+window = Tk()
+window.title("Guessing Game")
 
+welcome = Label(window, text="Welcome To The Guessing Game!", background="blue", foreground="white")
+welcome.grid(row=0, column=0, columnspan=3)
 
-p=8
+def Rules():
+   rule_window = Toplevel(window)
+   rule_window.title("The Rules")
+   the_rules = Label(rule_window, text="Here are the rules...", foreground="red")
+   the_rules.grid(row=0, column=0, columnspan=3)
 
-dt2=  datetime.datetime.now()
-#
-# try:
-#    with open("C:\\Users\\wn10\\Desktop\\1\\zmani\\Yatveta\\fzs-2022-07-27.log", encoding='utf-8') as f:
-#       xxxx = 1  ## no op to close localpath
-#    if os.path.isfile("C:\\Users\\wn10\\Desktop\\1\\zmani\\Yatveta\\fzs-2022-07-27.log"):
-#       # open
-#       os.remove("C:\\Users\\wn10\\Desktop\\1\\zmani\\Yatveta\\fzs-2022-07-27.log")
-#
-#    else:
-#       print("copyFileToArc: source content error")
-# except PermissionError as es:
-#    print("exception point 102030")
-# dt3=  datetime.datetime.now()
-# print ("cmd way:",dt2-dt1)
-# print ("p-y way", dt3-dt2)
+rules = Button(window, text="Rules", command=Rules)
+rules.grid(row=1, column=0, columnspan=1)
+
+window.mainloop()
